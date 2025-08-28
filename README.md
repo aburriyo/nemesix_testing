@@ -91,6 +91,24 @@ sudo journalctl -u nemesix -f
 sudo systemctl restart nemesix
 ```
 
+### 🔍 Diagnóstico Automático (Recomendado)
+```bash
+# Descargar y ejecutar el script de diagnóstico completo
+wget https://raw.githubusercontent.com/aburriyo/nemesix_testing/main/diagnose.sh
+chmod +x diagnose.sh
+./diagnose.sh
+```
+
+Este script revisará automáticamente:
+- ✅ Estado de servicios (systemd)
+- ✅ Procesos corriendo (gunicorn, nginx)
+- ✅ Puertos abiertos
+- ✅ Archivos de configuración
+- ✅ Permisos y usuarios
+- ✅ Conectividad local
+- ✅ Logs del sistema
+- ✅ Firewall
+
 ### Verificar Nginx
 ```bash
 # Probar configuración
