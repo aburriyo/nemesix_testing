@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header id="intro">
+    <div class="banner">
+        <div class="logo-boton">
+            <img src="{{ url_for('static', filename='img/assets/living-hell.png') }}" alt="logo-juego" class="logo-juego">
+            <h1 class="boton-accionar">DALE ENTER PARA INICIAR UN VIDEO!!</h1>
+        </div>
+    </div>
+    <div class="separacion"></div>
+</header>
+
+<!-- Video oculto al inicio -->
+<video id="introVideo" src="{{ url_for('static', filename='img/assets/teaser.mp4') }}" class="video-banner" autoplay loop muted style="display: none;"></video>
+
+<main>
+    <article class="quienes_somos" id="quienes_somos">
+        <div class="titulo">
+            <h1>¿QUIÉNES SOMOS?</h1>
+        </div>
+        <div class="flex_descripcion_qs">
+            <div class="foto_grupo">
+                <img src="{{ url_for('static', filename='img/assets/JD.png') }}" alt="foto_del_grupo.png">
+            </div>
+            <div class="descripcion_grupo">
+                <p>Nosotros somos un grupo de estudiantes de IV° medio con un gran fanatismo por los videojuegos
+                    y tuvimos la idea de crear un videojuego para nuestro proyecto de mitad de año,
+                    el cual se llama Living-Hell. Sobre nosotros podemos decir que somos un equipo de amigos que
+                    no sabíamos nada de como se llamaría nuestro juego ni en como nos reconocerían,
+                    pero al final usamos como NEMESIX ya que somos 6 integrantes y nos gusta el nombre.</p>
+            </div>
+        </div>
+
+        <div class="titulo">
+            <h1>Integrantes</h1>
+        </div>
+
+        <div id="avatars-container">
+            <div>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/assets/JD.png') }}" data-id="1 pj1" alt="Avatar 1" onclick="showInfoBox(1)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/assets/math.png') }}" data-id="2 pj2" alt="Avatar 2" onclick="showInfoBox(2)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/assets/miguel.png') }}" data-id="3 pj3" alt="Avatar 3" onclick="showInfoBox(3)"></a>
+            </div>
+            <div>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/assets/cristofer.png') }}" data-id="4 pj4" alt="Avatar 4" onclick="showInfoBox(4)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/assets/tomas.png') }}" data-id="5 pj5" alt="Avatar 5" onclick="showInfoBox(5)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/assets/eyner.png') }}" data-id="6 pj6" alt="Avatar 6" onclick="showInfoBox(6)"></a>
+            </div>
+        </div>
+
+        <div class="invisible" id="centro"></div>
+
+        <div class="titulo" id="living-hell">
+            <h1>Living-Hell</h1>
+        </div>
+        <div class="descripcion_living-hell">
+            <p>Living-Hell es un juego de estilo 2D y pixelado, del género "Run-N-Gun" donde el jugador debe disparar y avanzar rápidamente para completar los niveles. La historia trata sobre 6 programadores que desarrollan un videojuego para su proyecto escolar, pero varios errores en el código hacen que uno de sus computadores los absorba a diferentes mundos donde deberán eliminar enemigos para depurar los errores.</p>
+        </div>
+
+        <div class="RANKING" id="ranking">
+            <h1 class="Ranking_titulo">Ranking</h1>
+            <div class="contenedor_ranking">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Puntaje</th>
+                            <th>Tiempo</th>
+                            <th>Nivel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="primer_lugar">1.Mathiii_</td>
+                            <td class="primer_lugar">90622</td>
+                            <td class="primer_lugar">31:24</td>
+                            <td class="primer_lugar">Completado</td>
+                        </tr>
+                        <tr>
+                            <td>2.KKCK_Maik</td>
+                            <td>78923</td>
+                            <td>28:50</td>
+                            <td>Completado</td>
+                        </tr>
+                        <tr>
+                            <td>3.Crist0f3r</td>
+                            <td>75660</td>
+                            <td>32:22</td>
+                            <td>Completado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </article>
+</main>
+
+<footer>
+    <div class="logo-izquierdo-footer">
+        <img src="{{ url_for('static', filename='img/assets/pixil-frame-0.png') }}" alt="">
+    </div>
+    <div class="logo-centro-footer">
+        <div class="nav-footer">
+            <a href="#integrantes">Contactos</a>
+            <a href="#quienes_somos">Nosotros</a>
+            <a href="#living-hell">Living-Hell</a>
+            <a href="#ranking">Ranking</a>
+        </div>
+    </div>
+</footer>
+
+<button id="scrollToTop" class="scroll-to-top">
+    <img src="{{ url_for('static', filename='img/assets/top.png') }}" alt="top.png" class="top">
+</button>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2 class="dashboard-title">Dashboard - Panel de Control</h2>
+    
+    <div class="dashboard-content">
+        <div class="user-welcome">
+            <h3>¡Bienvenido, {{ session.username }}!</h3>
+            <p>Aquí puedes ver información del sistema y gestionar tu experiencia en NEMESIX.</p>
+        </div>
+        
+        <div class="dashboard-sections">
+            <div class="dashboard-card">
+                <h4>Usuarios Registrados</h4>
+                <div class="users-list">
+                    {% if users %}
+                        <div class="users-table">
+                            <div class="table-header">
+                                <span>Usuario</span>
+                                <span>Email</span>
+                                <span>Fecha Registro</span>
+                            </div>
+                            {% for user in users %}
+                            <div class="table-row">
+                                <span>{{ user.username }}</span>
+                                <span>{{ user.email }}</span>
+                                <span>{{ user.created_at.strftime('%d/%m/%Y') if user.created_at else 'N/A' }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No hay usuarios registrados aún.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h4>Enlaces Rápidos</h4>
+                <div class="quick-links">
+                    <a href="{{ url_for('profile') }}" class="btn btn-secondary">Mi Perfil</a>
+                    <a href="{{ url_for('index') }}#living-hell" class="btn btn-secondary">Living-Hell</a>
+                    <a href="{{ url_for('index') }}#ranking" class="btn btn-secondary">Ver Ranking</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #ffffff;
+}
+
+.dashboard-title {
+    text-align: center;
+    font-family: 'Pixelify Sans', monospace;
+    color: #00ff00;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.dashboard-content {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.user-welcome {
+    text-align: center;
+    margin-bottom: 40px;
+    font-family: 'Pixelify Sans', monospace;
+}
+
+.user-welcome h3 {
+    color: #00ffff;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.dashboard-sections {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.dashboard-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #00ff00;
+    border-radius: 8px;
+    padding: 25px;
+}
+
+.dashboard-card h4 {
+    color: #00ff00;
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.users-table {
+    font-family: 'Pixelify Sans', monospace;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    background: rgba(0, 255, 0, 0.2);
+    padding: 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #00ff00;
+    margin-bottom: 10px;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-bottom: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.table-row:hover {
+    background: rgba(0, 255, 255, 0.2);
+}
+
+.quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quick-links .btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .dashboard-sections {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-header,
+    .table-row {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .dashboard-title {
+        font-size: 2em;
+    }
+    
+    .dashboard-content {
+        padding: 20px;
+    }
+}
+</style>
+{% endblock %}

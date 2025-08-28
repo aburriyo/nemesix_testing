@@ -1,260 +1,378 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your New Flask App</title>
-
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Almarai:wght@800&amp;family=Nunito+Sans&amp;display=swap" />
-</head>
-
-<body>
-  <div class="container">
-    <div class="content">
-      <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjY3IDE3NS4yIDE3Ni40IDE3Ni41IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDY3IDE3NS4yIDE3Ni40IDE3Ni41OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojRkZGRkZGO30NCjwvc3R5bGU+DQo8ZyBpZD0iWE1MSURfMjI5XyI+DQoJPGcgaWQ9IlhNTElEXzY5MF8iPg0KCQk8ZyBpZD0iWE1MSURfNjkxXyI+DQoJCQk8Zz4NCgkJCQk8ZyBpZD0iWE1MSURfNDRfIj4NCgkJCQkJPGcgaWQ9IlhNTElEXzQ4XyI+DQoJCQkJCQk8cGF0aCBpZD0iWE1MSURfNDlfIiBjbGFzcz0ic3QwIiBkPSJNMTU1LjIsMzUxLjd2LTM0LjJjMzYuMiwwLDY0LjMtMzUuOSw1MC40LTc0Yy01LjEtMTQuMS0xNi40LTI1LjQtMzAuNS0zMC41DQoJCQkJCQkJYy0zOC4xLTEzLjgtNzQsMTQuMi03NCw1MC40bDAsMEg2N2MwLTU3LjcsNTUuOC0xMDIuNywxMTYuMy04My44YzI2LjQsOC4zLDQ3LjUsMjkuMyw1NS43LDU1LjcNCgkJCQkJCQlDMjU3LjksMjk1LjksMjEzLDM1MS43LDE1NS4yLDM1MS43eiIvPg0KCQkJCQk8L2c+DQoJCQkJCTxwb2x5Z29uIGlkPSJYTUxJRF80N18iIGNsYXNzPSJzdDAiIHBvaW50cz0iMTU1LjMsMzE3LjYgMTIxLjMsMzE3LjYgMTIxLjMsMjgzLjYgMTIxLjMsMjgzLjYgMTU1LjMsMjgzLjYgMTU1LjMsMjgzLjYgCQkJCQkNCgkJCQkJCSIvPg0KCQkJCQk8cG9seWdvbiBpZD0iWE1MSURfNDZfIiBjbGFzcz0ic3QwIiBwb2ludHM9IjEyMS4zLDM0My44IDk1LjEsMzQzLjggOTUuMSwzNDMuOCA5NS4xLDMxNy42IDEyMS4zLDMxNy42IAkJCQkJIi8+DQoJCQkJCTxwYXRoIGlkPSJYTUxJRF80NV8iIGNsYXNzPSJzdDAiIGQ9Ik05NS4xLDMxNy42SDczLjJsMCwwdi0yMS45bDAsMGgyMS45bDAsMFYzMTcuNnoiLz4NCgkJCQk8L2c+DQoJCQk8L2c+DQoJCTwvZz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4NCg==" alt="DigitalOcean Logo" width="100" />
-      <h1>Welcome to your new <a href="https://flask.palletsprojects.com/en/1.1.x/">Flask App</a>!</h1>
-
-      <p>
-        This application is an example of how to deploy a Flask Application to DigitalOcean's App
-        Platform. Check out their <a href="https://flask.palletsprojects.com/en/1.1.x/quickstart/">documentation</a> to
-        learn more about flask.
-      </p>
-
+{% block content %}
+<header id="intro">
+    <div class="banner">
+        <div class="logo-boton">
+            <img src="{{ url_for('static', filename='img/img/living-hell.png') }}" alt="logo-juego" class="logo-juego">
+            <h1 class="boton-accionar">DALE ENTER PARA INICIAR UN VIDEO!!</h1>
+        </div>
     </div>
+    <div class="separacion"></div>
+</header>
 
-    <div class="links">
-      <a href="https://github.com/MasonEgger/python-slackbot-sampleapp" target="_blank"
-        rel="noopener noreferrer"><strong>Sample Slackbot using Flask</strong>
-        <span>Learn how to build a Slackbot in Python</span>
-      </a>
-      <a href="https://www.digitalocean.com/docs/app-platform/languages-frameworks/python/" target="_blank"
-        rel="noopener noreferrer"><strong>DigitalOcean App Platform Docs for Flask</strong>
-        <span>DigitalOcean's reference documentation for Flask</span>
-      </a>
-      <a href="https://www.digitalocean.com/docs/app-platform/" target="_blank" rel="noopener noreferrer"><strong>App
-          Platform Documentation</strong><span>Learn about DigitalOcean's App Platform</span></a>
-      <a href="https://www.digitalocean.com/docs/droplets/how-to/" target="_blank" rel="noopener noreferrer"><strong>App
-          Platform API Documentation</strong>
-        <span>REST API Documentation for App Platform</span>
-      </a>
+<!-- Video oculto al inicio -->
+<video id="introVideo" src="{{ url_for('static', filename='img/assets/teaser.mp4') }}" class="video-banner" autoplay loop muted style="display: none;"></video>
+
+<main>
+    <article class="quienes_somos" id="quienes_somos">
+        <div class="titulo">
+            <h1>¿QUIÉNES SOMOS?</h1>
+        </div>
+        <div class="flex_descripcion_qs">
+            <div class="foto_grupo">
+                <img src="{{ url_for('static', filename='img/img/JD (1).png') }}" alt="foto_del_grupo.png">
+            </div>
+            <div class="descripcion_grupo">
+                <p>Nosotros somos un grupo de estudiantes de IV° medio con un gran fanatismo por los videojuegos 
+                    y tuvimos la idea de crear un videojuego para nuestro proyecto de mitad de año,
+                    el cual se llama Living-Hell. Sobre nosotros podemos decir que somos un equipo de amigos que 
+                    no sabíamos nada de como se llamaría nuestro juego ni en como nos reconocerían,
+                    pero al final usamos NEMESIX ya que somos 6 integrantes y nos gusta el nombre.</p>
+            </div>
+        </div>
+
+        <div class="titulo">
+            <h1>Integrantes</h1>
+        </div>
+
+        <div id="avatars-container">
+            <div>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/img/JD (1).png') }}" data-id="1" alt="Juan D. Medina" onclick="showInfoBox(1)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/img/math (1).png') }}" data-id="2" alt="Mathias R." onclick="showInfoBox(2)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/img/miguel.png') }}" data-id="3" alt="Miguel C." onclick="showInfoBox(3)"></a>
+            </div>
+            <div>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/img/cristofer (1).png') }}" data-id="4" alt="Cristofer F." onclick="showInfoBox(4)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/img/tomas.png') }}" data-id="5" alt="Tomas A." onclick="showInfoBox(5)"></a>
+                <a href="#centro"><img class="avatar" src="{{ url_for('static', filename='img/img/eyner (1).png') }}" data-id="6" alt="Eyner V." onclick="showInfoBox(6)"></a>
+            </div>
+        </div>
+
+        <div class="invisible" id="centro"></div>
+
+        <!-- Contenedores de info de cada integrante -->
+        <div id="info-1" class="info-box">
+            <div class="container_info_box">
+                <div class="izquierda_info">
+                    <img src="{{ url_for('static', filename='img/img/JD (1).png') }}" alt="Juan D. Medina">
+                </div>
+                <div class="centro_info">
+                    <div class="titulo_info">
+                        <h2>JUAN D. Medina</h2>
+                    </div>
+                    <div class="desc_info">
+                        <p>Director Creativo</p>
+                        <p>y Desarrollador de Videojuego</p>
+                    </div>
+                </div>
+                <div class="derecha_info">
+                    <img src="{{ url_for('static', filename='img/img/quit-btn.png') }}" alt="Cerrar" class="salir-boton" onclick="returnToAvatars()">
+                    <div class="btn-flex">
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/github (3).png') }}" alt="GitHub"></a>
+                        <a href="https://wa.me/977184509?text=Hola!,%20me%20da%20más%20información%20respecto%20a%20lo%20que%20hace?" target="_blank"><img src="{{ url_for('static', filename='img/img/whatsapp (1).png') }}" alt="WhatsApp"></a>
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/portafolio.png') }}" alt="Portafolio"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-2" class="info-box">
+            <div class="container_info_box">
+                <div class="izquierda_info">
+                    <img src="{{ url_for('static', filename='img/img/math (1).png') }}" alt="Mathias R.">
+                </div>
+                <div class="centro_info">
+                    <div class="titulo_info">
+                        <h2>Mathias R.</h2>
+                    </div>
+                    <div class="desc_info">
+                        <p>Desarrollador Front-End</p>
+                        <p>Implementación Visual y Funcional</p>
+                        <p>del Sitio WEB en Coordinación</p>
+                        <p>con el equipo de UX/UI.</p>
+                    </div>
+                </div>
+                <div class="derecha_info">
+                    <img src="{{ url_for('static', filename='img/img/quit-btn.png') }}" alt="Cerrar" class="salir-boton" onclick="returnToAvatars()">
+                    <div class="btn-flex">
+                        <a href="https://github.com/Math1611" target="_blank"><img src="{{ url_for('static', filename='img/img/github (3).png') }}" alt="GitHub"></a>
+                        <a href="https://wa.me/56987547760?text=Hola!,%20me%20da%20más%20información%20respecto%20a%20lo%20que%20hace?" target="_blank"><img src="{{ url_for('static', filename='img/img/whatsapp (1).png') }}" alt="WhatsApp"></a>
+                        <a href="https://math1611.github.io/Inicio0-new/" target="_blank"><img src="{{ url_for('static', filename='img/img/portafolio.png') }}" alt="Portafolio"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-3" class="info-box">
+            <div class="container_info_box">
+                <div class="izquierda_info">
+                    <img src="{{ url_for('static', filename='img/img/miguel.png') }}" alt="Miguel C.">
+                </div>
+                <div class="centro_info">
+                    <div class="titulo_info">
+                        <h2>Miguel C.</h2>
+                    </div>
+                    <div class="desc_info">
+                        <p>Especialista en Documentación</p>
+                        <p>Técnica y Contenidos Digitales.</p>
+                        <p>Especialista en Integración</p>
+                        <p>Visual y Estructuración HTML/CSS/JS.</p>
+                    </div>
+                </div>
+                <div class="derecha_info">
+                    <img src="{{ url_for('static', filename='img/img/quit-btn.png') }}" alt="Cerrar" class="salir-boton" onclick="returnToAvatars()">
+                    <div class="btn-flex">
+                        <a href="https://github.com/mayonesatoxica" target="_blank"><img src="{{ url_for('static', filename='img/img/github (3).png') }}" alt="GitHub"></a>
+                        <a href="https://wa.me/56973142711?text=Hola!,%20me%20da%20más%20información%20respecto%20a%20lo%20que%20hace?" target="_blank"><img src="{{ url_for('static', filename='img/img/whatsapp (1).png') }}" alt="WhatsApp"></a>
+                        <a href="https://mayonesatoxica.github.io/portafolioTp2-Miguel-cabezas2.0/" target="_blank"><img src="{{ url_for('static', filename='img/img/portafolio.png') }}" alt="Portafolio"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-4" class="info-box">
+            <div class="container_info_box">
+                <div class="izquierda_info">
+                    <img src="{{ url_for('static', filename='img/img/cristofer (1).png') }}" alt="Cristofer F.">
+                </div>
+                <div class="centro_info">
+                    <div class="titulo_info">
+                        <h2>Cristofer F.</h2>
+                    </div>
+                    <div class="desc_info">
+                        <p>Especialista en Arquitectura</p>
+                        <p>Back-End y Servicios Web.</p>
+                        <p>Diseñador de Sistemas de Gestión</p>
+                        <p>de Información y Consultas Eficientes.</p>
+                    </div>
+                </div>
+                <div class="derecha_info">
+                    <img src="{{ url_for('static', filename='img/img/quit-btn.png') }}" alt="Cerrar" class="salir-boton" onclick="returnToAvatars()">
+                    <div class="btn-flex">
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/github (3).png') }}" alt="GitHub"></a>
+                        <a href="https://wa.me/949473741?text=Hola!,%20me%20da%20más%20información%20respecto%20a%20lo%20que%20hace?" target="_blank"><img src="{{ url_for('static', filename='img/img/whatsapp (1).png') }}" alt="WhatsApp"></a>
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/portafolio.png') }}" alt="Portafolio"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-5" class="info-box">
+            <div class="container_info_box">
+                <div class="izquierda_info">
+                    <img src="{{ url_for('static', filename='img/img/tomas.png') }}" alt="Tomas A.">
+                </div>
+                <div class="centro_info">
+                    <div class="titulo_info">
+                        <h2>Tomas A.</h2>
+                    </div>
+                    <div class="desc_info">
+                        <p>Especialista en Dirección</p>
+                        <p>de Conceptos Creativos</p>
+                        <p>y Narrativa Visual.</p>
+                        <p>Creador de Narrativas Visuales</p>
+                        <p>Animadas para Plataformas Multimedia</p>
+                    </div>
+                </div>
+                <div class="derecha_info">
+                    <img src="{{ url_for('static', filename='img/img/quit-btn.png') }}" alt="Cerrar" class="salir-boton" onclick="returnToAvatars()">
+                    <div class="btn-flex">
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/github (3).png') }}" alt="GitHub"></a>
+                        <a href="https://wa.me/937818188?text=Hola!,%20me%20da%20más%20información%20respecto%20a%20lo%20que%20hace?" target="_blank"><img src="{{ url_for('static', filename='img/img/whatsapp (1).png') }}" alt="WhatsApp"></a>
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/portafolio.png') }}" alt="Portafolio"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="info-6" class="info-box">
+            <div class="container_info_box">
+                <div class="izquierda_info">
+                    <img src="{{ url_for('static', filename='img/img/eyner (1).png') }}" alt="Eyner V.">
+                </div>
+                <div class="centro_info">
+                    <div class="titulo_info">
+                        <h2>Eyner V.</h2>
+                    </div>
+                    <div class="desc_info">
+                        <p>Vocero y Figura Pública</p>
+                        <p>en Entornos Digitales</p>
+                        <p>y Presenciales.</p>
+                        <p>Facilitador de Comunicación</p>
+                        <p>en Escenarios Públicos y Digitales.</p>
+                    </div>
+                </div>
+                <div class="derecha_info">
+                    <img src="{{ url_for('static', filename='img/img/quit-btn.png') }}" alt="Cerrar" class="salir-boton" onclick="returnToAvatars()">
+                    <div class="btn-flex">
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/github (3).png') }}" alt="GitHub"></a>
+                        <a href="https://wa.me/956653495?text=Hola!,%20me%20da%20más%20información%20respecto%20a%20lo%20que%20hace?" target="_blank"><img src="{{ url_for('static', filename='img/img/whatsapp (1).png') }}" alt="WhatsApp"></a>
+                        <a href="#" target="_blank"><img src="{{ url_for('static', filename='img/img/portafolio.png') }}" alt="Portafolio"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="titulo" id="living-hell">
+            <h1>Living-Hell</h1>
+        </div>
+        <div class="descripcion_living-hell">
+            <p>Living-Hell es un juego de estilo 2D y pixelado, del género "Run-N-Gun" donde el jugador debe disparar y avanzar rápidamente para completar los niveles. La historia trata sobre 6 programadores que desarrollan un videojuego para su proyecto escolar, pero varios errores en el código hacen que uno de sus computadores los absorba a diferentes mundos donde deberán eliminar enemigos para depurar los errores.</p>
+        </div>
+
+        <div class="titulo" id="sinopsis">
+            <h1>Sinopsis</h1>
+        </div>
+        <div class="descripcion_living-hell">
+            <p>Living-Hell es un videojuego del género Run N' Gun, en el cual el jugador debe desplazarse por un mapa lleno de enemigos, los cuales tendrá que eliminar para pasar al siguiente nivel.</p>
+            <br>
+            <p>Seis programadores se enfrentan a una anomalía en su programa, la cual lo altera por completo. Lo que parecía un simple error de código, los arrastra a una pesadilla que va más allá del mundo real.</p>
+        </div>
+
+        <div class="titulo" id="motivaciones">
+            <h1>Motivaciones</h1>
+        </div>
+        <div class="descripcion_living-hell">
+            <p>Nuestra motivación es programar un videojuego para motivar a los estudiantes de AML a que se incorporen en el mundo de la programación y que logren superar sus metas de ser grandes programadores, desarrolladores o diseñadores de videojuegos.</p>
+        </div>
+
+        <div class="titulo" id="detras_de_codigo">
+            <h1>Detrás del Código</h1>
+        </div>
+
+        <div class="flex_detras_de_codigo">
+            <div class="descripcion-izq">
+                <p>Usamos principalmente Piskel para el diseño de todo el juego, como el personaje, bloques, objetos, etc. Piskel es una aplicación online para crear pixel art y sprites, ideal para animaciones en 2D.</p>
+            </div>
+            <div class="img-der">
+                <img src="{{ url_for('static', filename='img/img/piskel.png') }}" alt="Piskel">
+            </div>
+        </div>
+
+        <div class="flex_detras_de_codigo">
+            <div class="img-izq">
+                <img src="{{ url_for('static', filename='img/img/explosion-sprite.png') }}" alt="Sprite de explosión">
+            </div>
+            <div class="descripcion-der">
+                <p>Tenemos diferentes tipos de sprites. Las sprites de las explosiones las usamos siempre ya que tenemos varias criaturas en todo el juego y cada vez que se elimina a un enemigo, explota y se ve genial.</p>
+            </div>
+        </div>
+
+        <div class="flex_detras_de_codigo">
+            <div class="descripcion-izq">
+                <p>La sección de vidas y puntaje son extremadamente importantes para el juego, ya que es lo que nos indica si el jugador va bien o mal. Está será indicada en la parte izquierda superior. El puntaje se puede subir eliminando enemigos y las vidas se pueden perder si los enemigos te tocan o te disparan.</p>
+            </div>
+            <div class="img-der">
+                <img src="{{ url_for('static', filename='img/img/image.png') }}" alt="Sistema de vidas">
+            </div>
+        </div>
+
+        <div class="flex_detras_de_codigo">
+            <div class="img-izq">
+                <img src="{{ url_for('static', filename='img/img/carro-sprite.png') }}" alt="Sprite de carro">
+            </div>
+            <div class="descripcion-der">
+                <p>Así como las sprites de las explosiones, tenemos la de los objetos. Usamos más espacio para implementar más decoración en el juego y que se vea con diferencia.</p>
+            </div>
+        </div>
+
+        <div class="flex_detras_de_codigo">
+            <div class="descripcion-izq">
+                <p>Para el desarrollo del juego utilizamos Unity como motor principal, que nos permite crear experiencias 2D inmersivas con un control preciso de física, animaciones y mecánicas de juego.</p>
+            </div>
+            <div class="img-der">
+                <img src="{{ url_for('static', filename='img/img/image (1).png') }}" alt="Unity">
+            </div>
+        </div>
+
+        <div class="flex_detras_de_codigo">
+            <div class="img-izq">
+                <img src="{{ url_for('static', filename='img/img/codigos-c.png') }}" alt="Código C#">
+            </div>
+            <div class="descripcion-der">
+                <p>El juego está programado en C# utilizando las librerías y herramientas que Unity nos proporciona. Esto nos permite crear sistemas complejos de enemigos, power-ups, y mecánicas de juego fluidas.</p>
+            </div>
+        </div>
+
+        <div class="RANKING" id="ranking">
+            <h1 class="Ranking_titulo">Ranking</h1>
+            <div class="contenedor_ranking">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Puntaje</th>
+                            <th>Tiempo</th>
+                            <th>Nivel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="primer_lugar">1. Mathiii_</td>
+                            <td class="primer_lugar">90,622</td>
+                            <td class="primer_lugar">31:24</td>
+                            <td class="primer_lugar">Completado</td>
+                        </tr>
+                        <tr>
+                            <td>2. KKCK_Maik</td>
+                            <td>78,923</td>
+                            <td>28:50</td>
+                            <td>Completado</td>
+                        </tr>
+                        <tr>
+                            <td>3. Crist0f3r</td>
+                            <td>75,660</td>
+                            <td>32:22</td>
+                            <td>Completado</td>
+                        </tr>
+                        <tr>
+                            <td>4. 1Sh00t</td>
+                            <td>73,992</td>
+                            <td>40:38</td>
+                            <td>Completado</td>
+                        </tr>
+                        <tr>
+                            <td>5. FireR4tt</td>
+                            <td>73,122</td>
+                            <td>01:23:05</td>
+                            <td>Nivel 6</td>
+                        </tr>
+                        <tr>
+                            <td>6. EVZValdez</td>
+                            <td>66,689</td>
+                            <td>01:32:15</td>
+                            <td>Nivel 6</td>
+                        </tr>
+                        <tr>
+                            <td>7. Contando_F</td>
+                            <td>43,600</td>
+                            <td>01:55:00</td>
+                            <td>Nivel 6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </article>
+</main>
+
+<footer>
+    <div class="logo-izquierdo-footer">
+        <img src="{{ url_for('static', filename='img/assets/pixil-frame-0.png') }}" alt="Logo Nemesix">
     </div>
-  </div>
+    <div class="logo-centro-footer">
+        <div class="nav-footer">
+            <a href="#integrantes">Contactos</a>
+            <a href="#quienes_somos">Nosotros</a>
+            <a href="#living-hell">Living-Hell</a>
+            <a href="#ranking">Ranking</a>
+        </div>
+    </div>
+</footer>
 
-  <div id="stripes">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+<button id="scrollToTop" class="scroll-to-top">
+    <img src="{{ url_for('static', filename='img/img/top.png') }}" alt="Ir arriba" class="top">
+</button>
+{% endblock %}
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 50px;
-      min-height: 100vh;
-      position: relative;
-      color: #fff;
-      font-family: "Nunito Sans", sans-serif;
-      font-size: 19px;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-family: "Almarai", sans-serif;
-    }
-
-    :root {
-      --background: linear-gradient(150deg,
-          #17acff 15%,
-          #016aff 70%,
-          #68a6ff 94%);
-      --first: #53f;
-      --second: #4553ff;
-      --third: #4f40ff;
-      --fourth: #25ddf5;
-      --fifth: #1fa2ff;
-    }
-
-    #stripes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      width: 100%;
-      height: 100vw;
-      display: grid;
-      background: var(--background);
-      grid-template-columns: repeat(6, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-      transform: skewY(-12deg);
-      transform-origin: 0;
-    }
-
-    #stripes span {
-      /* border: 1px solid #c00c00; */
-    }
-
-    #stripes span:first-child {
-      grid-column: span 1;
-      background: var(--first);
-    }
-
-    #stripes span:nth-child(2) {
-      grid-column: span 2;
-      background: var(--second);
-    }
-
-    #stripes span:nth-child(3) {
-      grid-column: span 2;
-      background: var(--third);
-    }
-
-    #stripes span:nth-child(4) {
-      grid-column: 6;
-      grid-row: 3;
-      background: var(--fourth);
-    }
-
-    #stripes span:nth-child(5) {
-      grid-column: span 2;
-      grid-row: 4;
-      background: var(--fifth);
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 50px 0;
-    }
-
-    .content {
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-    }
-
-    h1 a {
-      color: #dbf1f5;
-    }
-
-    h1 a:hover {
-      color: #7decff;
-    }
-
-    p {
-      margin-bottom: 50px;
-    }
-     p a {
-      color:chartreuse;
-    }
-    
-    li {
-      text-align: left
-    }
-
-    code {
-      display: inline-block;
-      padding: 3px 6px;
-      margin-left: 3px;
-      margin-right: 3px;
-      border-radius: 5px;
-      font-size: 0.8rem;
-      background: #1a2279;
-      color: #dbf1f5;
-    }
-
-    .links {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .links a {
-      position: relative;
-      display: block;
-      background: rgba(255, 255, 255, 0.85);
-      border-radius: 5px;
-      padding: 20px;
-      font-size: 1.1rem;
-      text-decoration: none;
-      color: #222;
-      transition: 0.3s ease all;
-      overflow: hidden;
-    }
-
-    .links a:before,
-    .links a:after {
-      font-size: 40px;
-      display: block;
-      position: absolute;
-    }
-
-    .links a:before {
-      content: "";
-      top: -80%;
-      right: -150px;
-      width: 250px;
-      height: 250px;
-      background: rgba(125, 236, 255, 0.6);
-      pointer-events: none;
-      transform: rotate(-25deg);
-      transition: 0.4s cubic-bezier(0.34, 0.31, 0, 1.81) transform;
-    }
-
-    .links a:after {
-      content: "👉";
-      top: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      right: 30px;
-      transform: translateX(80px);
-      transition: 0.3s cubic-bezier(0.34, 0.31, 0, 1.81) transform;
-    }
-
-    .links a:hover {
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
-    }
-
-    .links a:hover:before {
-      transform: rotate(-25deg) translateX(60px);
-    }
-
-    .links a:hover:after {
-      transform: none;
-    }
-
-    .links a strong,
-    .links a span {
-      position: relative;
-      z-index: 1;
-    }
-
-    .links a strong {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .links a span {
-      color: #787878;
-      font-size: 0.9rem;
-    }
-  </style>
-</body>
-
-</html>
