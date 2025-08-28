@@ -5,3 +5,8 @@ itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.5
 Werkzeug==3.0.4
+
+# Dependencias adicionales para producción
+python-dotenv==1.0.0
+Flask-Session==0.5.0
+Flask-Cors==4.0.0

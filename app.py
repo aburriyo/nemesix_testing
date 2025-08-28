@@ -1,69 +1,155 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for
 from models.user import User
 import os
+import logging
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Configuración de logging para producción
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key_here')
+
+# Configuración de producción
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('FLASK_ENV') == 'production'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
+# Configuración de archivos estáticos para producción
+app.config['STATIC_FOLDER'] = 'static'
+app.config['TEMPLATES_FOLDER'] = 'templates'
+
+# Configuración de base de datos
+database_path = os.path.join(os.path.dirname(__file__), 'database', 'nemesix_db.db')
+if not os.path.exists(os.path.dirname(database_path)):
+    os.makedirs(os.path.dirname(database_path))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    logger.warning(f'Página no encontrada: {request.url}')
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    logger.error(f'Error interno del servidor: {str(e)}')
+    return render_template('500.html'), 500
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    try:
+        return render_template("index.html")
+    except Exception as e:
+        logger.error(f'Error en index: {str(e)}')
+        return "Error loading page", 500
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
+    try:
+        if request.method == "POST":
+            email = request.form.get("email", "").strip()
+            password = request.form.get("password", "")
 
-        user_data = User.get_user_by_email(email)
-        if user_data and check_password_hash(user_data['password'], password):
-            session['user_id'] = user_data['id']
-            session['username'] = user_data['username']
-            flash("Inicio de sesión exitoso", "success")
-            return redirect(url_for('dashboard'))
-        else:
-            flash("Credenciales incorrectas", "error")
-            return redirect(url_for('login'))
+            if not email or not password:
+                flash("Por favor, complete todos los campos", "error")
+                return redirect(url_for('login'))
 
-    return render_template("login.html")
+            user_data = User.get_user_by_email(email)
+            if user_data and check_password_hash(user_data['password'], password):
+                session['user_id'] = user_data['id']
+                session['username'] = user_data['username']
+                logger.info(f'Usuario {email} inició sesión exitosamente')
+                flash("Inicio de sesión exitoso", "success")
+                return redirect(url_for('dashboard'))
+            else:
+                logger.warning(f'Intento de login fallido para: {email}')
+                flash("Credenciales incorrectas", "error")
+                return redirect(url_for('login'))
+
+        return render_template("login.html")
+    except Exception as e:
+        logger.error(f'Error en login: {str(e)}')
+        flash("Error interno del servidor", "error")
+        return redirect(url_for('login'))
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-        password = generate_password_hash(request.form["password"])
+    try:
+        if request.method == "POST":
+            username = request.form.get("username", "").strip()
+            email = request.form.get("email", "").strip()
+            password = request.form.get("password", "")
 
-        if User.create_user(username, email, password):
-            flash("Usuario registrado exitosamente", "success")
-            return redirect(url_for('login'))
-        else:
-            return redirect(url_for('register'))
+            if not username or not email or not password:
+                flash("Por favor, complete todos los campos", "error")
+                return redirect(url_for('register'))
 
-    return render_template("register.html")
+            hashed_password = generate_password_hash(password)
+
+            if User.create_user(username, email, hashed_password):
+                logger.info(f'Nuevo usuario registrado: {email}')
+                flash("Usuario registrado exitosamente", "success")
+                return redirect(url_for('login'))
+            else:
+                flash("Error al registrar usuario", "error")
+                return redirect(url_for('register'))
+
+        return render_template("register.html")
+    except Exception as e:
+        logger.error(f'Error en register: {str(e)}')
+        flash("Error interno del servidor", "error")
+        return redirect(url_for('register'))
 
 @app.route("/dashboard")
 def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+    try:
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
 
-    users = User.get_all_users()
-    return render_template("dashboard.html", users=users)
+        users = User.get_all_users()
+        return render_template("dashboard.html", users=users)
+    except Exception as e:
+        logger.error(f'Error en dashboard: {str(e)}')
+        flash("Error interno del servidor", "error")
+        return redirect(url_for('index'))
 
 @app.route("/profile")
 def profile():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+    try:
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
 
-    user = User.get_user_by_id(session['user_id'])
-    return render_template("profile.html", user=user)
+        user = User.get_user_by_id(session['user_id'])
+        if not user:
+            session.clear()
+            return redirect(url_for('login'))
+
+        return render_template("profile.html", user=user)
+    except Exception as e:
+        logger.error(f'Error en profile: {str(e)}')
+        flash("Error interno del servidor", "error")
+        return redirect(url_for('index'))
 
 @app.route("/logout")
 def logout():
-    session.clear()
-    flash("Sesión cerrada exitosamente", "success")
-    return redirect(url_for('index'))
+    try:
+        session.clear()
+        logger.info('Usuario cerró sesión')
+        flash("Sesión cerrada exitosamente", "success")
+        return redirect(url_for('index'))
+    except Exception as e:
+        logger.error(f'Error en logout: {str(e)}')
+        return redirect(url_for('index'))
+
+# Health check endpoint para monitoreo
+@app.route("/health")
+def health():
+    return {"status": "healthy", "timestamp": os.environ.get('TIMESTAMP', 'unknown')}, 200
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Configuración para desarrollo local
+    app.run(
+        host='0.0.0.0',
+        port=int(os.environ.get('PORT', 5000)),
+        debug=os.environ.get('FLASK_ENV') != 'production'
+    )

@@ -1,35 +1,160 @@
-## Get Started
+# Nemesix - Aplicación Web
 
-This guide describes how to use DigitalOcean App Platform to run a sample Flask application.
+Una aplicación web moderna construida con Flask para el proyecto Nemesix.
 
-**Note**: Following these steps may result in charges for the use of DigitalOcean services.
+## 🚀 Despliegue en Digital Ocean
 
-### Requirements
+### Prerrequisitos
 
-* You need a DigitalOcean account. If you do not already have one, first [sign up](https://cloud.digitalocean.com/registrations/new).
+- Droplet de Ubuntu 20.04 o superior
+- Python 3.8+
+- Nginx
+- Supervisor (opcional, para gestión de procesos)
 
-## Deploy the App
+### Instalación
 
-Click the following button to deploy the app to App Platform. If you are not currently logged in with your DigitalOcean account, this button prompts you to to log in.
+1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/aburriyo/nemesix_testing.git
+cd nemesix_testing
+```
 
-[![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/digitalocean/sample-flask/tree/main)
+2. **Instalar dependencias del sistema:**
+```bash
+sudo apt update
+sudo apt install python3 python3-pip python3-venv nginx
+```
 
-Note that, for the purposes of this tutorial, this button deploys the app directly from DigitalOcean's GitHub repository, which disables automatic redeployment since you cannot change our template. If you want automatic redeployment or you want to change the sample app's code to your own, we instead recommend you fork [our repository](https://github.com/digitalocean/sample-flask/tree/main).
+3. **Configurar entorno virtual:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-To fork our repository, click the **Fork** button in the top-right of [its page on GitHub](https://github.com/digitalocean/sample-flask/tree/main), then follow the on-screen instructions. To learn more about forking repos, see the [GitHub documentation](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo).
+4. **Configurar variables de entorno:**
+```bash
+cp .env.example .env
+# Edita .env con tus configuraciones
+nano .env
+```
 
-After forking the repo, you can view the same README in your own GitHub org; for example, in `https://github.com/<your-org>/sample-flask`. To deploy the new repo, visit the [control panel](https://cloud.digitalocean.com/apps) and click the **Create App** button. This takes you to the app creation page. Under **Service Provider**, select **GitHub**. Then, under **Repository**, select your newly-forked repo. Ensure that your branch is set to **main** and **Autodeploy** is checked on. Finally, click **Next**.
+5. **Configurar Nginx:**
+```bash
+sudo cp nginx.conf /etc/nginx/sites-available/nemesix
+sudo ln -s /etc/nginx/sites-available/nemesix /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
 
-After clicking the **Deploy to DigitalOcean** button or completing the instructions above to fork the repo, follow these steps:
+6. **Configurar firewall:**
+```bash
+sudo ufw allow 'Nginx Full'
+sudo ufw allow ssh
+sudo ufw --force enable
+```
 
-1. Configure the app, such as by specifying HTTP routes, declaring environment variables, or adding a database. For the purposes of this tutorial, this step is optional.
-1. Provide a name for your app and select the region to deploy your app to, then click **Next**. By default, App Platform selects the region closest to you. Unless your app needs to interface with external services, your chosen region does not affect the app's performance, since to all App Platform apps are routed through a global CDN.
-1. On the following screen, leave all the fields as they are and click **Next**.
-1. Confirm your plan settings and how many containers you want to launch and click **Launch Basic/Pro App**.
+7. **Iniciar la aplicación:**
+```bash
+chmod +x start.sh
+./start.sh
+```
 
-After, you should see a "Building..." progress indicator. You can click **View Logs** to see more details of the build. It can take a few minutes for the build to finish, but you can follow the progress in the **Deployments** tab.
+### Configuración de SSL (Opcional)
 
-Once the build completes successfully, click the **Live App** link in the header and you should see your running application in a new tab, displaying the home page.
+Para configurar HTTPS con Let's Encrypt:
+
+```bash
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d tu-dominio.com
+```
+
+### Monitoreo
+
+La aplicación incluye un endpoint de health check:
+```
+GET /health
+```
+
+### Logs
+
+Los logs se almacenan en:
+- `/var/log/nginx/nemesix_access.log`
+- `/var/log/nginx/nemesix_error.log`
+- Los logs de la aplicación se muestran en la consola de Gunicorn
+
+### Troubleshooting
+
+#### Problema: Solo se muestra HTML sin estilos/CSS
+
+**Solución:**
+1. Verificar que Nginx esté sirviendo correctamente los archivos estáticos
+2. Revisar permisos de archivos: `chmod 755 static/`
+3. Verificar configuración de Nginx para archivos estáticos
+4. Reiniciar Nginx: `sudo systemctl restart nginx`
+
+#### Problema: Error 500
+
+**Solución:**
+1. Revisar logs de Gunicorn
+2. Verificar conexión a base de datos
+3. Revisar variables de entorno
+4. Verificar permisos de escritura en `database/`
+
+#### Problema: Error de conexión
+
+**Solución:**
+1. Verificar que Gunicorn esté ejecutándose: `ps aux | grep gunicorn`
+2. Revisar configuración de firewall
+3. Verificar configuración de Nginx
+
+### Comandos útiles
+
+```bash
+# Reiniciar servicios
+sudo systemctl restart nginx
+sudo systemctl reload nginx
+
+# Ver logs
+sudo tail -f /var/log/nginx/nemesix_error.log
+sudo tail -f /var/log/nginx/nemesix_access.log
+
+# Ver procesos
+ps aux | grep gunicorn
+ps aux | grep nginx
+
+# Verificar configuración
+sudo nginx -t
+```
+
+## 📋 Características
+
+- ✅ Autenticación de usuarios
+- ✅ Dashboard administrativo
+- ✅ Sistema de perfiles
+- ✅ Interfaz responsiva
+- ✅ Animaciones modernas
+- ✅ Base de datos SQLite
+- ✅ Configuración de producción
+- ✅ Manejo de errores
+- ✅ Logging integrado
+
+## 🛠️ Tecnologías
+
+- **Backend:** Flask 3.0.3
+- **Base de datos:** SQLite
+- **Servidor:** Gunicorn
+- **Web Server:** Nginx
+- **Frontend:** HTML5, CSS3, JavaScript
+- **Animaciones:** Anime.js
+
+## 📞 Soporte
+
+Si encuentras problemas durante el despliegue, verifica:
+1. Los logs de error
+2. La configuración de Nginx
+3. Los permisos de archivos
+4. Las variables de entorno
 
 
 ## Make Changes to Your App
