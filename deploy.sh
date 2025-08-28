@@ -132,10 +132,36 @@ print_success "Directorios creados"
 
 # Paso 9: Inicializar base de datos
 print_status "🗄️ Inicializando base de datos..."
-python3 -c "from models.user import User; print('Base de datos inicializada')" || true
+python3 -c "
+import sys
+import os
+sys.path.append('.')
+from config.mysqlconnection import connectToMySQL
+
+# Conectar a la base de datos (esto crea las tablas automáticamente)
+db = connectToMySQL('nemesix_db')
+print('Base de datos inicializada correctamente')
+
+# Verificar que las tablas existen
+import sqlite3
+db_path = 'database/nemesix_db.db'
+conn = sqlite3.connect(db_path)
+cursor = conn.cursor()
+cursor.execute(\"SELECT name FROM sqlite_master WHERE type='table' AND name='users';\")
+if cursor.fetchone():
+    print('Tabla users creada correctamente')
+else:
+    print('ERROR: Tabla users no encontrada')
+conn.close()
+"
+
+# Paso 10: Inicializar datos de prueba
+print_status "👤 Creando usuarios de prueba..."
+chmod +x init_test_data.sh
+./init_test_data.sh
 print_success "Base de datos inicializada"
 
-# Paso 10: Configurar Nginx
+# Paso 11: Configurar Nginx
 print_status "🌐 Configurando Nginx..."
 sudo cp nginx.conf /etc/nginx/sites-available/nemesix
 
@@ -158,7 +184,7 @@ else
     exit 1
 fi
 
-# Paso 11: Crear servicio systemd para la aplicación
+# Paso 12: Crear servicio systemd para la aplicación
 print_status "⚙️ Creando servicio systemd..."
 sudo tee /etc/systemd/system/nemesix.service > /dev/null <<EOF
 [Unit]
@@ -193,7 +219,7 @@ else
     exit 1
 fi
 
-# Paso 12: Configurar logrotate para logs
+# Paso 13: Configurar logrotate para logs
 print_status "📝 Configurando rotación de logs..."
 sudo tee /etc/logrotate.d/nemesix > /dev/null <<EOF
 $PROJECT_DIR/logs/*.log {
@@ -211,7 +237,7 @@ $PROJECT_DIR/logs/*.log {
 EOF
 print_success "Rotación de logs configurada"
 
-# Paso 13: Configurar monitoreo básico
+# Paso 14: Configurar monitoreo básico
 print_status "📊 Configurando monitoreo básico..."
 cat > check_nemesix.sh << 'EOF'
 #!/bin/bash
@@ -241,7 +267,7 @@ EOF
 chmod +x check_nemesix.sh
 print_success "Script de monitoreo creado"
 
-# Paso 14: Mostrar información final
+# Paso 15: Mostrar información final
 print_success "🎉 ¡Despliegue completado exitosamente!"
 echo ""
 echo "📋 Información importante:"
@@ -253,11 +279,23 @@ echo "   📝 Logs de Nginx: sudo tail -f /var/log/nginx/nemesix_error.log"
 echo "   🏥 Health check: http://localhost:8080/health"
 echo "   🔍 Verificación: ./check_nemesix.sh"
 echo ""
+print_success "🔐 Credenciales de acceso:"
+echo "   👤 Administrador:"
+echo "      Email: admin@nemesix.com"
+echo "      Password: admin123"
+echo "   👤 Usuarios de prueba:"
+echo "      test1@nemesix.com / test123"
+echo "      test2@nemesix.com / test123"
+echo "      test3@nemesix.com / test123"
+echo ""
+print_warning "⚠️  IMPORTANTE: Cambia la contraseña del administrador en producción"
+echo ""
 print_warning "📋 Próximos pasos recomendados:"
-echo "   1. Configurar un dominio y SSL con Let's Encrypt"
-echo "   2. Configurar monitoreo avanzado"
-echo "   3. Configurar backups automáticos"
-echo "   4. Revisar configuraciones de seguridad"
+echo "   1. Accede a http://tu-ip/login con las credenciales de arriba"
+echo "   2. Configurar un dominio y SSL con Let's Encrypt"
+echo "   3. Configurar monitoreo avanzado"
+echo "   4. Configurar backups automáticos"
+echo "   5. Revisar configuraciones de seguridad"
 echo ""
 print_status "💡 Comandos útiles:"
 echo "   Reiniciar aplicación: sudo systemctl restart nemesix"
@@ -265,7 +303,7 @@ echo "   Reiniciar Nginx: sudo systemctl restart nginx"
 echo "   Ver logs: sudo journalctl -u nemesix -f"
 echo "   Ver estado: sudo systemctl status nemesix"
 
-# Paso 15: Verificación final
+# Paso 16: Verificación final
 print_status "🔍 Realizando verificación final..."
 sleep 5
 
