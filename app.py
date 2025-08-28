@@ -3,6 +3,10 @@ from models.user import User
 import os
 import logging
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 # Configuración de logging para producción
 logging.basicConfig(level=logging.INFO)
@@ -51,6 +55,7 @@ def login():
             password = request.form.get("password", "")
 
             if not email or not password:
+                logger.warning(f'Intento de login con campos vacíos desde IP: {request.remote_addr}')
                 flash("Por favor, complete todos los campos", "error")
                 return redirect(url_for('login'))
 
@@ -58,17 +63,17 @@ def login():
             if user_data and check_password_hash(user_data['password'], password):
                 session['user_id'] = user_data['id']
                 session['username'] = user_data['username']
-                logger.info(f'Usuario {email} inició sesión exitosamente')
+                logger.info(f'Usuario {email} inició sesión exitosamente desde IP: {request.remote_addr}')
                 flash("Inicio de sesión exitoso", "success")
                 return redirect(url_for('dashboard'))
             else:
-                logger.warning(f'Intento de login fallido para: {email}')
+                logger.warning(f'Intento de login fallido para: {email} desde IP: {request.remote_addr}')
                 flash("Credenciales incorrectas", "error")
                 return redirect(url_for('login'))
 
         return render_template("login.html")
     except Exception as e:
-        logger.error(f'Error en login: {str(e)}')
+        logger.error(f'Error en login: {str(e)} - IP: {request.remote_addr}')
         flash("Error interno del servidor", "error")
         return redirect(url_for('login'))
 
@@ -81,22 +86,24 @@ def register():
             password = request.form.get("password", "")
 
             if not username or not email or not password:
+                logger.warning(f'Intento de registro con campos vacíos desde IP: {request.remote_addr}')
                 flash("Por favor, complete todos los campos", "error")
                 return redirect(url_for('register'))
 
             hashed_password = generate_password_hash(password)
 
             if User.create_user(username, email, hashed_password):
-                logger.info(f'Nuevo usuario registrado: {email}')
+                logger.info(f'Nuevo usuario registrado: {email} desde IP: {request.remote_addr}')
                 flash("Usuario registrado exitosamente", "success")
                 return redirect(url_for('login'))
             else:
+                logger.warning(f'Error al registrar usuario: {email} desde IP: {request.remote_addr}')
                 flash("Error al registrar usuario", "error")
                 return redirect(url_for('register'))
 
         return render_template("register.html")
     except Exception as e:
-        logger.error(f'Error en register: {str(e)}')
+        logger.error(f'Error en register: {str(e)} - IP: {request.remote_addr}')
         flash("Error interno del servidor", "error")
         return redirect(url_for('register'))
 
