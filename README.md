@@ -33,6 +33,134 @@ chmod +x deploy.sh
 ./setup_ssl.sh tu-dominio.com
 ```
 
+## 🔧 Solución de Problemas
+
+### Error: "Este script no debe ejecutarse como root"
+**Problema:** El script detecta que estás ejecutando como usuario root.
+
+**Solución:**
+```bash
+# Crear usuario dedicado
+adduser nemesix
+usermod -aG sudo nemesix
+su - nemesix
+
+# Ahora ejecutar el script
+./deploy.sh
+```
+
+### Error: "fatal: destination path '/var/www/nemesix' already exists"
+**Problema:** El directorio ya existe y no está vacío.
+
+**Soluciones:**
+
+#### Opción A: Usar el script auxiliar (Recomendado)
+```bash
+# Descargar y ejecutar el script auxiliar
+wget https://raw.githubusercontent.com/aburriyo/nemesix_testing/main/fix_directory.sh
+chmod +x fix_directory.sh
+./fix_directory.sh
+```
+
+#### Opción B: Borrar y reclonar (Si no hay datos importantes)
+```bash
+sudo rm -rf /var/www/nemesix
+./deploy.sh
+```
+
+#### Opción C: Respaldar y continuar
+```bash
+# Crear backup
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+sudo mkdir -p /var/backups
+sudo mv /var/www/nemesix /var/backups/nemesix_$TIMESTAMP
+
+# Ejecutar despliegue
+./deploy.sh
+```
+
+### Verificar Estado del Servicio
+```bash
+# Verificar que el servicio esté corriendo
+sudo systemctl status nemesix
+
+# Ver logs en tiempo real
+sudo journalctl -u nemesix -f
+
+# Reiniciar servicio
+sudo systemctl restart nemesix
+```
+
+### Verificar Nginx
+```bash
+# Probar configuración
+sudo nginx -t
+
+# Ver logs de Nginx
+sudo tail -f /var/log/nginx/nemesix_error.log
+
+# Reiniciar Nginx
+sudo systemctl restart nginx
+```
+
+### Health Check
+```bash
+# Verificar que la aplicación responda
+curl http://localhost:8080/health
+
+# Verificar desde el navegador
+curl http://TU_IP_DEL_DROPLET/health
+```
+
+### Comandos Útiles para Mantenimiento
+```bash
+# Ver estado completo del sistema
+./check_nemesix.sh
+
+# Actualizar aplicación
+cd /var/www/nemesix
+git pull origin main
+sudo systemctl restart nemesix
+
+# Ver logs de aplicación
+sudo journalctl -u nemesix -f
+
+# Ver logs de Nginx
+sudo tail -f /var/log/nginx/nemesix_access.log
+sudo tail -f /var/log/nginx/nemesix_error.log
+```
+
+### Problemas Comunes
+
+#### La aplicación no carga estilos/CSS
+- Verifica que Nginx esté sirviendo archivos estáticos correctamente
+- Revisa los permisos de la carpeta `static/`
+```bash
+sudo chown -R nemesix:nemesix /var/www/nemesix/static
+sudo chmod 755 /var/www/nemesix/static
+```
+
+#### Error 502 Bad Gateway
+- La aplicación Flask no está corriendo
+```bash
+sudo systemctl status nemesix
+sudo systemctl restart nemesix
+```
+
+#### Error 500 Internal Server Error
+- Revisa los logs de la aplicación
+```bash
+sudo journalctl -u nemesix -f
+```
+
+#### Problemas de permisos
+```bash
+# Ajustar permisos correctos
+sudo chown -R nemesix:nemesix /var/www/nemesix
+sudo chmod 755 /var/www/nemesix
+sudo chmod 644 /var/www/nemesix/*.py
+```
+
 ### Opción 2: Despliegue Manual
 
 #### Prerrequisitos

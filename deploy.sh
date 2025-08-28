@@ -68,11 +68,33 @@ sudo chown -R $USER:$USER $PROJECT_DIR
 print_success "Directorio del proyecto creado"
 
 # Paso 5: Clonar el repositorio
-print_status "📥 Clonando repositorio..."
+print_status "📥 Configurando repositorio..."
 if [ -d "$PROJECT_DIR/.git" ]; then
+    print_warning "Directorio ya existe y es un repositorio git"
     cd $PROJECT_DIR
     git pull origin main
     print_success "Repositorio actualizado"
+elif [ -d "$PROJECT_DIR" ]; then
+    print_warning "Directorio $PROJECT_DIR existe pero no es un repositorio git"
+    echo -e "${YELLOW}Contenido actual:${NC}"
+    ls -la $PROJECT_DIR
+    echo ""
+    read -p "¿Quieres respaldar y recrear el directorio? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        BACKUP_DIR="/var/backups/nemesix_$TIMESTAMP"
+        sudo mkdir -p $BACKUP_DIR
+        sudo mv $PROJECT_DIR/* $BACKUP_DIR/ 2>/dev/null || true
+        sudo rmdir $PROJECT_DIR
+        print_warning "Contenido respaldado en: $BACKUP_DIR"
+        git clone https://github.com/aburriyo/nemesix_testing.git $PROJECT_DIR
+        cd $PROJECT_DIR
+        print_success "Repositorio clonado"
+    else
+        print_error "Operación cancelada por el usuario"
+        exit 1
+    fi
 else
     git clone https://github.com/aburriyo/nemesix_testing.git $PROJECT_DIR
     cd $PROJECT_DIR
