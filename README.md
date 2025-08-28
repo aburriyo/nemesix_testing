@@ -357,6 +357,107 @@ sudo ufw status
 ```
 3. Verificar configuración de Nginx
 
+#### Problema: Error 502 Bad Gateway
+
+**Síntomas:**
+- La página muestra "502 Bad Gateway"
+- Nginx está funcionando pero no puede conectarse al backend
+- La aplicación Flask/Gunicorn no responde
+
+**Diagnóstico Rápido:**
+```bash
+# Ejecutar diagnóstico automático
+./diagnose.sh
+```
+
+**Soluciones Automáticas:**
+```bash
+# Solución rápida automatizada
+./fix_502.sh
+```
+
+**Solución Manual Paso a Paso:**
+
+1. **Verificar que Gunicorn esté corriendo:**
+```bash
+# Ver procesos
+ps aux | grep gunicorn
+
+# Ver estado del servicio
+sudo systemctl status nemesix
+
+# Verificar puerto 8080
+netstat -tlnp | grep 8080
+```
+
+2. **Si Gunicorn no está corriendo:**
+```bash
+# Reiniciar el servicio
+sudo systemctl restart nemesix
+
+# Ver logs de error
+sudo journalctl -u nemesix -f
+```
+
+3. **Verificar configuración de Nginx:**
+```bash
+# Probar configuración
+sudo nginx -t
+
+# Recargar configuración
+sudo systemctl reload nginx
+
+# Ver logs de Nginx
+sudo tail -f /var/log/nginx/nemesix_error.log
+```
+
+4. **Verificar conectividad:**
+```bash
+# Probar conexión local
+curl http://localhost:8080/health
+
+# Verificar que Nginx puede conectarse
+curl http://127.0.0.1:8080/health
+```
+
+5. **Si el problema persiste:**
+```bash
+# Recargar systemd
+sudo systemctl daemon-reload
+
+# Reiniciar todo
+sudo systemctl restart nemesix nginx
+
+# Verificar configuración del sitio
+cat /etc/nginx/sites-available/nemesix
+```
+
+**Causas Comunes del Error 502:**
+- ✅ Gunicorn no está iniciado
+- ✅ Puerto 8080 ocupado por otro proceso
+- ✅ Problemas de permisos
+- ✅ Configuración incorrecta de Nginx
+- ✅ Problemas con el entorno virtual
+- ✅ Base de datos corrupta
+
+**Comandos de Verificación:**
+```bash
+# Ver estado completo
+sudo systemctl status nemesix
+sudo systemctl status nginx
+
+# Ver logs en tiempo real
+sudo journalctl -u nemesix -f
+sudo tail -f /var/log/nginx/nemesix_error.log
+
+# Ver procesos
+ps aux | grep gunicorn
+ps aux | grep nginx
+
+# Ver puertos
+netstat -tlnp | grep -E ":(80|8080)"
+```
+
 ### Escalado y Optimización
 
 #### Para alto tráfico:
