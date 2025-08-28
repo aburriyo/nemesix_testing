@@ -2,129 +2,237 @@
 
 Una aplicación web moderna construida con Flask para el proyecto Nemesix.
 
-## 🚀 Despliegue en Digital Ocean
+## 🚀 Despliegue Automático en Digital Ocean Droplet
 
-### Prerrequisitos
+### Opción 1: Despliegue Automático (Recomendado)
+
+#### Paso 1: Crear Droplet
+1. Ve a [Digital Ocean](https://cloud.digitalocean.com/)
+2. Crea un nuevo Droplet con Ubuntu 22.04 LTS
+3. Elige el plan más económico (5$/mes está bien)
+4. Agrega tu SSH key para acceso seguro
+
+#### Paso 2: Conectar al Droplet
+```bash
+ssh root@TU_IP_DEL_DROPLET
+```
+
+#### Paso 3: Ejecutar despliegue automático
+```bash
+# Descargar y ejecutar el script de despliegue
+wget https://raw.githubusercontent.com/aburriyo/nemesix_testing/main/deploy.sh
+chmod +x deploy.sh
+./deploy.sh
+```
+
+¡Listo! Tu aplicación estará funcionando en `http://TU_IP_DEL_DROPLET`
+
+#### Paso 4: Configurar SSL (Opcional pero recomendado)
+```bash
+# Una vez que tengas un dominio apuntando a tu Droplet
+./setup_ssl.sh tu-dominio.com
+```
+
+### Opción 2: Despliegue Manual
+
+#### Prerrequisitos
 
 - Droplet de Ubuntu 20.04 o superior
 - Python 3.8+
 - Nginx
 - Supervisor (opcional, para gestión de procesos)
 
-### Instalación
+#### Instalación Manual
 
-1. **Clonar el repositorio:**
+1. **Conectar al Droplet:**
 ```bash
-git clone https://github.com/aburriyo/nemesix_testing.git
-cd nemesix_testing
+ssh root@TU_IP_DEL_DROPLET
 ```
 
-2. **Instalar dependencias del sistema:**
+2. **Actualizar el sistema:**
 ```bash
-sudo apt update
-sudo apt install python3 python3-pip python3-venv nginx
+sudo apt update && sudo apt upgrade -y
 ```
 
-3. **Configurar entorno virtual:**
+3. **Instalar dependencias:**
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+sudo apt install -y python3 python3-pip python3-venv nginx git ufw
+```
+
+4. **Clonar el repositorio:**
+```bash
+cd /var/www
+sudo mkdir nemesix
+sudo chown -R $USER:$USER nemesix
+git clone https://github.com/aburriyo/nemesix_testing.git nemesix
+cd nemesix
+```
+
+5. **Configurar entorno virtual:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. **Configurar variables de entorno:**
+6. **Configurar variables de entorno:**
 ```bash
 cp .env.example .env
-# Edita .env con tus configuraciones
-nano .env
+nano .env  # Configura tu SECRET_KEY
 ```
 
-5. **Configurar Nginx:**
+7. **Configurar Nginx:**
 ```bash
 sudo cp nginx.conf /etc/nginx/sites-available/nemesix
+sudo sed -i 's|/ruta/a/tu/proyecto/nemesix_testing|/var/www/nemesix|g' /etc/nginx/sites-available/nemesix
 sudo ln -s /etc/nginx/sites-available/nemesix /etc/nginx/sites-enabled/
+sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-6. **Configurar firewall:**
+8. **Crear directorios necesarios:**
 ```bash
-sudo ufw allow 'Nginx Full'
-sudo ufw allow ssh
-sudo ufw --force enable
+mkdir -p database logs
+chmod 755 static/ database/ logs/
 ```
 
-7. **Iniciar la aplicación:**
+9. **Iniciar la aplicación:**
 ```bash
 chmod +x start.sh
 ./start.sh
 ```
 
-### Configuración de SSL (Opcional)
+### Configuración de Dominio y SSL
 
-Para configurar HTTPS con Let's Encrypt:
+#### Paso 1: Configurar DNS
+1. Ve a tu registrador de dominios
+2. Crea un registro A apuntando a la IP de tu Droplet
+3. Espera a que se propague el DNS (puede tomar hasta 24 horas)
 
+#### Paso 2: Configurar SSL
 ```bash
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d tu-dominio.com
+# Instalar Certbot
+sudo apt install -y certbot python3-certbot-nginx
+
+# Obtener certificado
+sudo certbot --nginx -d tu-dominio.com -d www.tu-dominio.com
+
+# La renovación automática ya está configurada
 ```
 
-### Monitoreo
+### Monitoreo y Mantenimiento
 
-La aplicación incluye un endpoint de health check:
+#### Comandos útiles:
+```bash
+# Ver estado de servicios
+sudo systemctl status nemesix
+sudo systemctl status nginx
+
+# Ver logs
+sudo journalctl -u nemesix -f
+sudo tail -f /var/log/nginx/nemesix_error.log
+
+# Reiniciar servicios
+sudo systemctl restart nemesix
+sudo systemctl restart nginx
+
+# Verificar salud
+curl http://localhost:8080/health
 ```
-GET /health
+
+#### Backup automático:
+```bash
+# Crear script de backup
+sudo tee /usr/local/bin/backup_nemesix.sh > /dev/null <<EOF
+#!/bin/bash
+DATE=\$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/var/backups/nemesix"
+mkdir -p \$BACKUP_DIR
+
+# Backup de base de datos
+cp /var/www/nemesix/database/nemesix_db.db \$BACKUP_DIR/nemesix_db_\$DATE.db
+
+# Backup de configuración
+tar -czf \$BACKUP_DIR/config_\$DATE.tar.gz /var/www/nemesix/.env /etc/nginx/sites-available/nemesix
+
+# Limpiar backups antiguos (mantener últimos 7)
+find \$BACKUP_DIR -name "*.db" -mtime +7 -delete
+find \$BACKUP_DIR -name "*.tar.gz" -mtime +7 -delete
+
+echo "Backup completado: \$DATE"
+EOF
+
+sudo chmod +x /usr/local/bin/backup_nemesix.sh
+
+# Configurar cron para backup diario
+sudo crontab -l | { cat; echo "0 2 * * * /usr/local/bin/backup_nemesix.sh"; } | sudo crontab -
 ```
-
-### Logs
-
-Los logs se almacenan en:
-- `/var/log/nginx/nemesix_access.log`
-- `/var/log/nginx/nemesix_error.log`
-- Los logs de la aplicación se muestran en la consola de Gunicorn
 
 ### Troubleshooting
 
 #### Problema: Solo se muestra HTML sin estilos/CSS
 
 **Solución:**
-1. Verificar que Nginx esté sirviendo correctamente los archivos estáticos
-2. Revisar permisos de archivos: `chmod 755 static/`
+1. Verificar que Nginx esté sirviendo los archivos estáticos:
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+2. Revisar permisos:
+```bash
+sudo chown -R www-data:www-data /var/www/nemesix/static/
+```
 3. Verificar configuración de Nginx para archivos estáticos
-4. Reiniciar Nginx: `sudo systemctl restart nginx`
 
 #### Problema: Error 500
 
 **Solución:**
-1. Revisar logs de Gunicorn
-2. Verificar conexión a base de datos
+1. Revisar logs de la aplicación:
+```bash
+sudo journalctl -u nemesix -f
+```
+2. Verificar base de datos:
+```bash
+ls -la /var/www/nemesix/database/
+```
 3. Revisar variables de entorno
-4. Verificar permisos de escritura en `database/`
 
 #### Problema: Error de conexión
 
 **Solución:**
-1. Verificar que Gunicorn esté ejecutándose: `ps aux | grep gunicorn`
-2. Revisar configuración de firewall
+1. Verificar que Gunicorn esté corriendo:
+```bash
+ps aux | grep gunicorn
+```
+2. Revisar configuración de firewall:
+```bash
+sudo ufw status
+```
 3. Verificar configuración de Nginx
 
-### Comandos útiles
+### Escalado y Optimización
 
+#### Para alto tráfico:
+1. **Aumentar workers de Gunicorn:**
+   - Edita `gunicorn_config.py`
+   - Ajusta `workers = multiprocessing.cpu_count() * 2 + 1`
+
+2. **Configurar Redis para sesiones:**
+   - Instala Redis: `sudo apt install redis-server`
+   - Configura Flask-Session
+
+3. **Configurar CDN:**
+   - Usa Cloudflare o AWS CloudFront
+   - Configura para archivos estáticos
+
+#### Monitoreo avanzado:
 ```bash
-# Reiniciar servicios
-sudo systemctl restart nginx
-sudo systemctl reload nginx
+# Instalar Prometheus + Grafana
+sudo apt install -y prometheus grafana
 
-# Ver logs
-sudo tail -f /var/log/nginx/nemesix_error.log
-sudo tail -f /var/log/nginx/nemesix_access.log
-
-# Ver procesos
-ps aux | grep gunicorn
-ps aux | grep nginx
-
-# Verificar configuración
-sudo nginx -t
+# Configurar monitoreo de la aplicación
+# Agregar métricas personalizadas en app.py
 ```
 
 ## 📋 Características
@@ -138,6 +246,8 @@ sudo nginx -t
 - ✅ Configuración de producción
 - ✅ Manejo de errores
 - ✅ Logging integrado
+- ✅ SSL automático
+- ✅ Backups automáticos
 
 ## 🛠️ Tecnologías
 
@@ -145,6 +255,7 @@ sudo nginx -t
 - **Base de datos:** SQLite
 - **Servidor:** Gunicorn
 - **Web Server:** Nginx
+- **SSL:** Let's Encrypt
 - **Frontend:** HTML5, CSS3, JavaScript
 - **Animaciones:** Anime.js
 
@@ -155,6 +266,8 @@ Si encuentras problemas durante el despliegue, verifica:
 2. La configuración de Nginx
 3. Los permisos de archivos
 4. Las variables de entorno
+
+**¿Necesitas ayuda?** Revisa los logs y la documentación de troubleshooting arriba.
 
 
 ## Make Changes to Your App

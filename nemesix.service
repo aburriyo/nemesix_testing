@@ -1,0 +1,40 @@
+# Archivo de configuración de ejemplo para systemd
+# Ubicación: /etc/systemd/system/nemesix.service
+
+[Unit]
+Description=Nemesix Flask Application
+After=network.target
+Requires=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/nemesix
+Environment="PATH=/var/www/nemesix/venv/bin"
+Environment="FLASK_ENV=production"
+Environment="SECRET_KEY=tu_clave_secreta_muy_segura_aqui"
+ExecStart=/var/www/nemesix/venv/bin/gunicorn --config gunicorn_config.py app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=nemesix
+
+# Configuración de límites
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Configuración de seguridad
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/www/nemesix/database /var/www/nemesix/logs
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target
